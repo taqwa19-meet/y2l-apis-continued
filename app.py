@@ -1,5 +1,12 @@
 from flask import Flask, render_template, request
 import requests, json
+from clarifai.rest import ClarifaiApp
+from clarifai.rest import Image as ClImage
+
+app = ClarifaiApp(api_key='62c59b4eb52547238acda6225d9bd908')
+model = app.public_models.general_model
+model.model_version = 'aa7f35c01e0642fda5cf400f543e7c40'
+
 app=Flask(__name__)
 
 @app.route('/')
@@ -28,8 +35,9 @@ def study_image():
         }
       }
     ]}
+    response = model.predict([ClImage(url=image_url)])
 
-    response = requests.post(api_url, headers=headers, data=json.dumps(data))
+    # response = requests.post(api_url, headers=headers, data=json.dumps(data))
     response_dict = json.loads(response.content)
     response_dict["outputs"][0]["data"]["concepts"]
 
